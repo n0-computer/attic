@@ -1,0 +1,53 @@
+[workspace]
+members = [
+  "stores/*",
+]
+# even if all crates are set to edition 2021, we still need to force the
+# resolver to 2
+# https://github.com/gfx-rs/wgpu/issues/2356#issuecomment-1005134986
+resolver = "2"
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "Apache-2.0/MIT"
+rust-version = "1.65"
+repository = "https://github.com/n0-computer/iroh"
+
+[workspace.dependencies]
+# We prefer to place all dependencies for our workspace crates here.
+# The should be added here with default features only so that each
+# crate explicitly enables the features they need.
+#
+# There are two execeptions to this:
+# - If a crate needs a dependency with `default-features=false` the
+#   default features must be disabled here.
+# - If we really want to uniformely enforce a feature in all crates,
+#   e.g. anyhow's backtrace feature.
+
+anyhow = { version = "1", features = ["backtrace"] }
+backoff = "0.4"
+ignore = "0.4.18"
+rocksdb = "0.19"
+tempfile = "3.3"
+
+[profile.optimized-release]
+inherits = 'release'
+lto = true
+debug = false
+debug-assertions = false
+opt-level = 3
+panic = 'abort'
+incremental = false
+
+[profile.docker]
+inherits = 'release'
+lto = true
+debug = false
+debug-assertions = false
+opt-level = 3
+panic = 'abort'
+incremental = false
+
+[workspace.metadata.release]
+consolidate-commits = true
